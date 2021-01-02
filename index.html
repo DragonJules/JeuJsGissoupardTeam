@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas</title>
+    <style>
+      body {
+        margin: 0;
+        margin-bottom: 0;
+        overflow: hidden;
+        height: 1000px;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas class="myCanvas">
+      <p>Add suitable fallback here.</p>
+    </canvas>
+    <script>
+        const canvas = document.querySelector('.myCanvas');
+        const width = canvas.width = window.innerWidth;
+        const height = canvas.height = window.innerHeight;
+        const ctx = canvas.getContext('2d');
+        const max_heath_bar_width = width/2*0.95;
+        ctx.fillStyle = 'rgb(0,0,0)';
+        ctx.fillRect(0,0,width,height);
+        var background = new Image();
+        var name = undefined;
+        function draw(image,x,y) {//fonction pour charger et dessiner une image
+                image.onload = ctx.drawImage(image,x,y);
+            }
+        class Player{ // Classe principale
+            constructor(health, velocity, attack){
+                this.health = health; //Vie du joueur
+                this.max_health = health;//Vie max, utilisée pour la barre de vie
+                this.velocity = velocity;//Vitesse du joueur
+                this.attack = attack;//Attaque du joueur
+                this.equipement = undefined;//arme du joueur
+                this.level = undefined;//niveau du joueur
+                this.image = undefined;//image du joueur, à définir
+                this.x = undefined; //abscisse du coin supérieur gauche de l'image
+                this.y = undefined; //ordonnée du coin supérieur gauche de l'image
+                this.name = undefined;//Nom du joueur, indéfini pour l'instant
+                this.power_value = this.power_time = this.level + 10; //pourcentage d'augmentation de capacité lors de l'utilisation du pouvoir et durée d'activation*/
+                this.power_time_used = 0; //temps utilisé de pouvoir
+                this.power_load_bar = 0;//Chargement de sa barre de pouvoir
+                this.power_loaded = false;//est-ce que la barre est chargée ?
+            }
+            move_right(){
+                this.x += this.velocity;
+            };
+            move_left(){
+                this.x -= this.velocity;
+            };
+            use_power(capacity){//pouvoir du joueur
+                capacity += this.power_value/100 * capacity
+            };
+            add_bar() {//augmentation du chargement du pouvoir
+                this.power_load_bar ++;
+                if(this.power_load_bar == 100){
+                    this.power_loaded = true;
+                };
+            };
+        };
+        class Giant{
+            constructor(name){
+                this.player = new Player(250,5,15);
+                this.player.name = name;
+            };
+
+        };
+        class Manipulator{
+            constructor(name){
+                this.player = new Player(100,20,10);
+                this.name = name;
+            };
+        };
+
+        class Clown{
+            constructor(name){
+                this.player = new Player(100,20,10);
+                this.name = name;
+            };
+        };
+
+        class Picasso{
+            constructor(name){
+                this.player = new Player(100,20,20);
+                this.name = name;
+            };
+        };
+
+        class Yelen{
+            constructor(name){
+                this.player = new Player(100,20,10);
+                this.name = name;
+            };
+        };
+
+        class Wizard{
+            constructor(name){
+                this.player = new Player(100,10,10);
+                this.player.name = name;
+            };
+        };
+
+        class Warrior{
+            constructor(name){
+                this.player = new Player(100,10,10);
+                this.player.name = name;
+            };
+        };
+
+        class Ninja{
+            constructor(name){
+                this.player = new Player(50,5,20);
+                this.player.name = name;
+            };
+        };
+        var player = new Player(100,5,10);
+        var running = true;//variable pour la boucle du jeu
+        var pressed = {}; //pour gérer les touches
+        document.addEventListener('keydown'/*touche appuyée*/, function(event) {
+          pressed[event.keyCode] = true;//récupère le code de la touche dans un dict
+        });
+        document.addEventListener('keyup'/*touche lâchée*/, function(event) {
+          pressed[event.keyCode] = false;//récupère le code de la touche dans un dict
+        });
+        function game_loop() {    
+            ctx.fillStyle = 'rgba(0,0,0, 0,25)';
+            ctx.fillRect(0,0,width,height);
+            draw(background,0,-250);//applique l'arrière-plan
+            draw(player.image,player.x,player.y);//dessine le joueur
+            ctx.fillStyle = 'rgb(69,73,68)';
+            ctx.fillRect(50,50,ctx.max_heath_bar_width*(player.health/player.max_health),10);
+            ctx.fillStyle = 'rgb(0,255,0)';
+            ctx.fillRect(50,50,60,10);
+            if (pressed[37]) {
+              player.move_left();
+            } else if(pressed[39]){
+              player.move_right();
+            };
+            requestAnimationFrame(game_loop);
+        };
+        game_loop()
+    </script>
+  </body>
+</html>
